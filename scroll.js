@@ -3,12 +3,11 @@ document.onWayTo = null;
 
 document.addEventListener('scroll', () => {
     const sections = [...document.querySelectorAll('section')];
-    const scrollY = window.scrollY || window.pageYOffset; // Cross-browser compatible scroll position
+    const scrollY = window.scrollY || window.pageYOffset; 
 
     if (document.onWayTo === null) {
         let destIndex = document.lastCentered;
 
-        // Find the section that is currently in the middle of the viewport
         for (let i = 0; i < sections.length; i++) {
             const section = sections[i];
             const sectionTop = section.offsetTop;
