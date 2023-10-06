@@ -1,9 +1,40 @@
+document.lastCentered = 0;
+document.onWayTo = null;
 
-document.lastScrollPosition = 0;
+document.addEventListener('scroll', () => {
+    const sections = [...document.querySelectorAll('section')];
+    const scrollY = window.scrollY || window.pageYOffset; // Cross-browser compatible scroll position
 
-document.addEventListener(type='scroll',listener= () => {
+    if (document.onWayTo === null) {
+        let destIndex = document.lastCentered;
 
-    const direction =  window.pageXOffset - document.lastScrollPosition > 0 ? 'down' : 'up';
-   
-    document.lastScrollPosition = window.pageXOffset;
-})
+        // Find the section that is currently in the middle of the viewport
+        for (let i = 0; i < sections.length; i++) {
+            const section = sections[i];
+            const sectionTop = section.offsetTop;
+            const sectionBottom = sectionTop + section.clientHeight;
+            if (scrollY >= sectionTop && scrollY < sectionBottom) {
+                destIndex = i;
+                break;
+            }
+        }
+
+        if (destIndex !== document.lastCentered) {
+            document.onWayTo = destIndex;
+            window.scrollTo({ top: sections[destIndex].offsetTop, behavior: 'smooth' });
+        }
+    }
+
+    sections.forEach((section, index) => {
+        if (index === document.lastCentered) {
+            section.className = 'active';
+            if (document.onWayTo === index) {
+                document.onWayTo = null;
+            }
+        } else {
+            section.className = '';
+        }
+    });
+
+    document.lastCentered = document.onWayTo !== null ? document.onWayTo : document.lastCentered;
+});
